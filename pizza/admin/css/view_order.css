@@ -1,0 +1,114 @@
+/* รีเซ็ตสไตล์พื้นฐานและตั้งค่าฟอนต์ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header */
+.header {
+  background-color: #de1d23;
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.header a:hover {
+  color: #ffe082;
+}
+
+/* Container */
+.container {
+  max-width: 800px; /* ขนาดแคบลงเพื่อเน้นข้อมูล */
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #de1d23;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 1.5rem 0 1rem;
+}
+
+/* Order Details */
+.order-details p {
+  font-size: 1.1rem;
+  color: #333;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.75rem;
+}
+
+/* Order Items List */
+.order-items {
+  list-style: none;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.order-items li {
+  font-size: 1.1rem;
+  color: #333;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.order-items li:last-child {
+  border-bottom: none;
+}
+
+/* Total */
+.order-details p:last-of-type {
+  font-weight: 600;
+  color: #de1d23;
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .order-details p,
+  .order-items {
+    padding: 0.75rem;
+  }
+}

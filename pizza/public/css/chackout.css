@@ -1,0 +1,212 @@
+/* รีเซ็ตสไตล์พื้นฐานและตั้งค่าฟอนต์ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header */
+.header {
+  background-color: #de1d23;
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.header a:hover {
+  color: #ffe082;
+}
+
+/* Container */
+.container {
+  max-width: 800px; /* ขนาดแคบลงเพื่อเน้นฟอร์มและข้อมูล */
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #de1d23;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 1.5rem 0 1rem;
+}
+
+/* User Info and Summary */
+.order-details p {
+  font-size: 1.1rem;
+  color: #333;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+/* Voucher Message */
+.voucher-msg {
+  color: #e63946;
+  font-size: 0.95rem;
+  margin-left: 0.5rem;
+  display: inline;
+}
+
+/* Order Items List */
+.order-items {
+  list-style: none;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.order-items li {
+  font-size: 1.1rem;
+  color: #333;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.order-items li:last-child {
+  border-bottom: none;
+}
+
+/* Total and Discount */
+.order-details p.total {
+  font-weight: 600;
+  color: #de1d23;
+  text-align: right;
+}
+
+.order-details p.discount {
+  color: #666;
+  text-align: right;
+}
+
+.order-details p.subtotal {
+  color: #333;
+  text-align: right;
+}
+
+/* Form */
+form {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  margin-bottom: 1.5rem;
+}
+
+.form-row label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.form-row textarea,
+.form-row select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-row textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-row select {
+  cursor: pointer;
+}
+
+.form-row textarea:focus,
+.form-row select:focus {
+  outline: none;
+  border-color: #ff6f61;
+  box-shadow: 0 0 5px rgba(255, 111, 97, 0.3);
+}
+
+/* Buttons */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: #ff6f61;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background: #de1d23;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  form {
+    padding: 1rem;
+  }
+
+  .form-row textarea,
+  .form-row select {
+    width: 100%;
+  }
+
+  .order-details p,
+  .order-items {
+    padding: 0.75rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

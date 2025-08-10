@@ -1,0 +1,221 @@
+/* รีเซ็ตสไตล์พื้นฐานและตั้งค่าฟอนต์ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header */
+.header {
+  background-color: #de1d23;
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.header a:hover {
+  color: #ffe082;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  background: transparent; /* ทำให้พื้นหลังโปร่งใส */
+  border-radius: 10px;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #de1d23;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 1.5rem 0 1rem;
+}
+
+/* Form */
+form {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  background: transparent;
+}
+
+.form-row {
+  margin-bottom: 1.5rem;
+}
+
+.form-row label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.form-row input[type="text"],
+.form-row input[type="number"],
+.form-row textarea,
+.form-row input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-row textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-row input:focus,
+.form-row textarea:focus {
+  outline: none;
+  border-color: #ff6f61;
+  box-shadow: 0 0 5px rgba(255, 111, 97, 0.3);
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.table th,
+.table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.table th {
+  background: #ff6f61;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #ff6f61;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin: 0.2rem;
+}
+
+.btn:hover {
+  background: #de1d23;
+  transform: translateY(-2px);
+}
+
+.secondary {
+  background: #ccc;
+  color: #333;
+}
+
+.secondary:hover {
+  background: #b0b0b0;
+  transform: translateY(-2px);
+}
+
+/* Form in Table */
+.table form {
+  display: inline;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  form {
+    padding: 1rem;
+  }
+
+  .form-row input[type="text"],
+  .form-row input[type="number"],
+  .form-row textarea,
+  .form-row input[type="file"] {
+    width: 100%;
+  }
+
+  .table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .table th,
+  .table td {
+    min-width: 100px;
+  }
+
+  .table th:nth-child(1),
+  .table td:nth-child(1) {
+    min-width: 50px;
+  }
+
+  .btn, .secondary {
+    width: 100%;
+    text-align: center;
+  }
+}

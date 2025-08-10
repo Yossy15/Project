@@ -1,0 +1,516 @@
+// ignore_for_file: file_names, unused_import
+
+import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:delivery_app/services/user_service.dart';
+import 'package:delivery_app/models/order.dart';
+import 'package:delivery_app/pages/home-user-sender/list-add-menu/CartPage.dart';
+import 'package:delivery_app/pages/home-user-sender/list-add-menu/all-page.dart';
+import 'package:delivery_app/pages/home-user-sender/list-menu.dart';
+import 'package:delivery_app/pages/home-user-sender/profile-sender.dart';
+
+class HomesenderPage extends StatefulWidget {
+  const HomesenderPage({super.key});
+
+  @override
+  State<HomesenderPage> createState() => _HomesenderPageState();
+}
+
+class _HomesenderPageState extends State<HomesenderPage> {
+  int _selectedIndex = 0;
+  List<Order> orders = [];
+  List<Order> filteredOrders = [];
+  bool isLoading = false;
+  TextEditingController searchController = TextEditingController();
+
+  final UserService _userService = UserService();
+  String _userName = '';
+  String _userImage = '';
+
+  final String url = 'https://back-deliverys.onrender.com/api/orders/';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    await _loadUserData();
+    await fetchOrders();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? userId = prefs.getString('userId');
+      if (userId != null) {
+        final userData = await _userService.getUserByIdd(userId);
+        setState(() {
+          _userName = userData['name'] ?? 'ผู้ส่งอาหาร';
+          _userImage = userData['profileImage'] ?? '';
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> fetchOrders() async {
+    setState(() => isLoading = true);
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = json.decode(response.body);
+        setState(() {
+          orders = jsonData.map((data) => Order.fromJson(data)).toList();
+          filteredOrders = orders;
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load orders');
+      }
+    } catch (e) {
+      setState(() => isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error fetching orders: $e')),
+        );
+      }
+    }
+  }
+
+  void searchOrders(String query) {
+    setState(() {
+      filteredOrders = orders
+          .where((order) =>
+              order.recipient.name.toLowerCase().contains(query.toLowerCase()) ||
+              order.recipient.phone.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void addToCart(Order order) {
+    setState(() {
+      for (var item in order.items) {
+        item.orders = 0;
+      }
+      updateOrder(order);
+    });
+  }
+
+  Future<void> updateOrder(Order order) async {
+    final String updateUrl = 'https://back-deliverys.onrender.com/api/orders/${order.id}';
+    try {
+      final response = await http.put(
+        Uri.parse(updateUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'items': order.items
+              .map((item) => {
+                    'name': item.name,
+                    'orders': item.orders,
+                    "quantity": item.quantity,
+                    "price": item.price,
+                  })
+              .toList(),
+        }),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update order');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating order: $e')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: RefreshIndicator(
+        onRefresh: fetchOrders,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeaderRow(),
+            _buildSearchBar(),
+            _buildSearchButton(),
+            const Center(
+              child: FractionallySizedBox(
+                widthFactor: 0.9,
+                child: Divider(color: Colors.black),
+              ),
+            ),
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _buildOrderList(),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
+      floatingActionButton: _buildFloatingActionButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      backgroundColor: Colors.white,
+      title: Text(
+        'Foodgo',
+        style: GoogleFonts.lobster(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      actions: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              _userName,
+              style: GoogleFonts.fredoka(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(width: 8),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SendProfileScreen(),
+              ),
+            );
+          },
+          child: CircleAvatar(
+            radius: 20,
+            backgroundColor: Colors.grey[200],
+            backgroundImage: _userImage.isNotEmpty
+                ? CachedNetworkImageProvider(_userImage)
+                : const CachedNetworkImageProvider(
+                    'https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0='),
+          ),
+        ),
+        const SizedBox(width: 10),
+      ],
+    );
+  }
+
+  Widget _buildHeaderRow() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Orders',
+            style: GoogleFonts.itim(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: fetchOrders,
+                tooltip: 'Refresh Orders',
+              ),
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) {
+                      return CartPage(cartOrders: orders);
+                    },
+                  );
+                },
+                child: Text(
+                  'Cart',
+                  style: GoogleFonts.itim(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        controller: searchController,
+        decoration: InputDecoration(
+          hintText: 'Search by name or ID',
+          prefixIcon: const Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+        onChanged: searchOrders,
+        style: GoogleFonts.itim(),
+      ),
+    );
+  }
+
+  Widget _buildSearchButton() {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          searchOrders(searchController.text);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        child: Text('ค้นหาผู้รับสินค้า', style: GoogleFonts.itim(fontSize: 14)),
+      ),
+    );
+  }
+
+  Widget _buildOrderList() {
+    if (filteredOrders.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('ไม่พบรายการสินค้า', style: GoogleFonts.itim(fontSize: 18)),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: fetchOrders,
+              icon: const Icon(Icons.refresh),
+              label: Text('รีเฟรช', style: GoogleFonts.itim()),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return ListView.separated(
+      itemCount: filteredOrders.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
+      itemBuilder: (context, index) {
+        final order = filteredOrders[index];
+        return order.items.any((item) => item.orders == 1)
+            ? _buildOrderCard(order)
+            : const SizedBox();
+      },
+    );
+  }
+
+  Widget _buildOrderCard(Order order) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: order.imageUrls.isNotEmpty
+                  ? Image.network(
+                      order.imageUrls[0],
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.image_not_supported),
+                      ),
+                    )
+                  : Container(
+                      width: 60,
+                      height: 60,
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.image_not_supported),
+                    ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (var item in order.items.where((item) => item.orders == 1))
+                    Text(
+                      item.name,
+                      style: GoogleFonts.itim(
+                        color: Colors.orange,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  Text(order.recipient.name, style: GoogleFonts.itim()),
+                  Text('Phone: ${order.recipient.phone}', style: GoogleFonts.itim()),
+                  Text('\$${order.totalAmount.toStringAsFixed(2)}',
+                      style: GoogleFonts.itim(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () => addToCart(order),
+              child: const Icon(Icons.add_shopping_cart),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, -3),
+          ),
+        ],
+      ),
+      child: BottomAppBar(
+        color: const Color(0xFFef2a38),
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              _buildNavItem(Icons.home, '●', 0),
+              _buildNavItem(Icons.dehaze, '', 1),
+              const SizedBox(width: 60),
+              _buildNavItem(Icons.apps, '', 2),
+              _buildNavItem(Icons.person, '', 3),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, String label, int index) {
+    return InkWell(
+      splashColor: Colors.transparent,
+      onTap: () {
+        setState(() {
+          _selectedIndex = index;
+        });
+        switch (_selectedIndex) {
+          case 1:
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AllPage()));
+            break;
+          case 2:
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const MenusenderPage()));
+            break;
+          case 3:
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SendProfileScreen()));
+            break;
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: _selectedIndex == index ? Colors.white : Colors.white,
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              color: _selectedIndex == index ? Colors.white : Colors.white,
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFloatingActionButton() {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.red,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.4),
+            spreadRadius: 3,
+            blurRadius: 4,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () {
+          // Action when tapped
+        },
+        child: const SizedBox(
+          width: 65,
+          height: 65,
+          child: Icon(Icons.add, size: 35, color: Colors.white),
+        ),
+      ),
+    );
+  }
+}

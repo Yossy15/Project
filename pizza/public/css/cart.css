@@ -1,0 +1,233 @@
+/* รีเซ็ตสไตล์พื้นฐานและตั้งค่าฟอนต์ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header */
+.header {
+  background-color: #de1d23;
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.header a:hover {
+  color: #ffe082;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #de1d23;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 1.5rem 0 1rem;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  word-wrap: break-word;
+  vertical-align: middle;
+}
+
+.table th {
+  background: #ff6f61;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.table td {
+  vertical-align: middle;
+  color: #333;
+}
+
+.table img {
+  border-radius: 5px;
+  object-fit: cover;
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.table input[type="number"] {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.table input[type="number"]:focus {
+  outline: none;
+  border-color: #ff6f61;
+  box-shadow: 0 0 5px rgba(255, 111, 97, 0.3);
+}
+
+.table .secondary {
+  background: #ccc;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  display: inline-block;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.table .secondary:hover {
+  background: #b0b0b0;
+  transform: translateY(-2px);
+
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #ff6f61;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background: #de1d23;
+  transform: translateY(-2px);
+}
+
+/* Voucher Form */
+form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+form input[type="text"] {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  width: 200px;
+  transition: border-color 0.3s ease;
+}
+
+form input[type="text"]:focus {
+  outline: none;
+  border-color: #ff6f61;
+  box-shadow: 0 0 5px rgba(255, 111, 97, 0.3);
+}
+
+/* Empty Cart Message */
+p {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin: 2rem 0;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 2rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .table th,
+  .table td {
+    min-width: 100px;
+  }
+
+  .table th:nth-child(1),
+  .table td:nth-child(1) {
+    min-width: 50px;
+  }
+
+  form {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  form input[type="text"] {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+}
