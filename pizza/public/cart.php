@@ -4,7 +4,6 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
 $cart = $_SESSION['cart'] ?? [];
 
-// handle remove or update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['remove'])) {
     $k = (int)$_POST['remove'];

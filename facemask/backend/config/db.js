@@ -1,6 +1,7 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 
-const connection = mongoose.createConnection('mongodb+srv://yossy:UCm53aKnr9kzdtUj@cluster0.rj3m9.mongodb.net/FacemaskDB?retryWrites=true&w=majority', {
+const connection = mongoose.createConnection(process.env.MONGO_URI, {
 });
 
 connection
@@ -11,4 +12,4 @@ connection
     console.error("MongoDB Connection error:", error);
   });
 
-module.exports = connection; // ส่งออกการเชื่อมต่อ
+module.exports = connection; 
