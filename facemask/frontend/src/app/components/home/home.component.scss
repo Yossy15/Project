@@ -1,4 +1,5 @@
 mat-toolbar {
+    // background: #0f0d46;
     background: transparent;
     backdrop-filter: blur(10px);
     color: rgb(0, 0, 0);
@@ -6,19 +7,61 @@ mat-toolbar {
     position: fixed;
     z-index: 1;
 }
+
+h4 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.mat-mdc-text-field-wrapper {
+    width: 100%;
+    font-size: 12px;
+}
+
+.tb {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+.tb {
+    display: flex;
+    align-items: center;
+}
+
+.shorter {
+    flex: 1;
+    max-width: 150px;
+    margin-right: 10px;
+    max-height: 55px;
+}
+
 a:hover {
     font-weight: bolder;
     text-shadow: 0 0 30px rgb(0, 255, 34);
 }
+
 img:hover {
     filter: brightness(100%);
 }
+
 img:not(:hover) {
+    // filter: blur(10px);
     filter: brightness(80%);
 }
+
 .change {
     border-radius: 50%;
 }
+
+.col-md-5 {
+    background: rgba(255, 255, 255, 0.182);
+}
+
+.hoverspan:hover {
+    color: red;
+}
+// --
 .hovercard {
     position: relative;
     width: 500px;
@@ -32,6 +75,7 @@ img:not(:hover) {
     border-radius: 8px;
     cursor: pointer;
 }
+
 .hovercard::before {
     content: '';
     position: absolute;
@@ -46,6 +90,7 @@ img:not(:hover) {
     pointer-events: none;
     transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
 .hovercard::after {
     content: "";
     z-index: -1;
@@ -53,20 +98,93 @@ img:not(:hover) {
     inset: 0;
     background: linear-gradient(-45deg, #fc00ff 0%, #00dbde 100%);
     transform: translate3d(0, 0, 0) scale(0.95);
-    filter: blur(20px);
 }
+
+/* Image Overlay Styles */
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    z-index: 10;
+}
+
+.lock-icon {
+    margin-bottom: 15px;
+    animation: pulse 2s infinite;
+}
+
+.login-text {
+    color: #FFD700;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Dialog Container Styles */
+::ng-deep .login-signup-dialog-container {
+    .mat-mdc-dialog-container {
+        padding: 0;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    
+    .mat-mdc-dialog-surface {
+        padding: 0;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+}
+ 
+
 .heading {
     font-size: 20px;
     text-transform: capitalize;
     font-weight: 700;
 }
+
 .hovercard p:not(.heading) {
     font-size: 14px;
 }
+
 .hovercard p:last-child {
     color: #e81cff;
     font-weight: 600;
 }
+
+.hovercard:hover::after {
+    filter: blur(30px);
+}
+
+.hovercard:hover::before {
+    transform: rotate(-90deg) scaleX(1.14) scaleY(0.87);
+}
+
+//   ---
 .btn {
     display: flex;
     justify-content: center;
@@ -84,6 +202,7 @@ img:not(:hover) {
     background-origin: border-box;
     background-clip: content-box, border-box;
 }
+
 #container-stars {
     position: absolute;
     z-index: -1;
@@ -94,6 +213,7 @@ img:not(:hover) {
     backdrop-filter: blur(1rem);
     border-radius: 5rem;
 }
+
 strong {
     z-index: 2;
     font-family: 'Avalors Personal Use';
@@ -102,11 +222,13 @@ strong {
     color: #FFFFFF;
     text-shadow: 0 0 4px white;
 }
+
 #glow {
     position: absolute;
     display: flex;
     width: 12rem;
 }
+
 .circle {
     width: 100%;
     height: 30px;
@@ -114,31 +236,38 @@ strong {
     animation: pulse_3011 4s infinite;
     z-index: -1;
 }
+
 .circle:nth-of-type(1) {
     background: rgba(254, 83, 186, 0.636);
 }
+
 .circle:nth-of-type(2) {
     background: rgba(142, 81, 234, 0.704);
 }
+
 .btn:hover #container-stars {
     z-index: 1;
     background-color: #212121;
 }
+
 .btn:active {
     border: double 4px #FE53BB;
     background-origin: border-box;
     background-clip: content-box, border-box;
     animation: none;
 }
+
 .btn:active .circle {
     background: #FE53BB;
 }
+
 #stars {
     position: relative;
     background: transparent;
     width: 200rem;
     height: 200rem;
 }
+
 #stars::after {
     content: "";
     position: absolute;
@@ -148,10 +277,12 @@ strong {
     height: 100%;
     animation: animStarRotate 90s linear infinite;
 }
+
 #stars::after {
     background-image: radial-gradient(#ffffff 1px, transparent 1%);
     background-size: 50px 50px;
 }
+
 #stars::before {
     content: "";
     position: absolute;
@@ -161,11 +292,13 @@ strong {
     height: 500%;
     animation: animStar 60s linear infinite;
 }
+
 #stars::before {
     background-image: radial-gradient(#ffffff 1px, transparent 1%);
     background-size: 50px 50px;
     opacity: 0.5;
 }
+
 @keyframes animStar {
     from {
         transform: translateY(0);
@@ -175,6 +308,7 @@ strong {
         transform: translateY(-135rem);
     }
 }
+
 @keyframes animStarRotate {
     from {
         transform: rotate(360deg);
@@ -184,6 +318,7 @@ strong {
         transform: rotate(0);
     }
 }
+
 @keyframes gradient_301 {
     0% {
         background-position: 0% 50%;
@@ -197,6 +332,7 @@ strong {
         background-position: 0% 50%;
     }
 }
+
 @keyframes pulse_3011 {
     0% {
         transform: scale(0.75);

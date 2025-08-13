@@ -76,9 +76,9 @@ export class ChAvatarimgComponent implements OnInit {
           console.log('Avatar changed successfully.');
 
           // อัปเดต localStorage และตัวแปรใน component
-          localStorage.setItem('avatar_img', this.newAvatarImg);
+          
           this.avatar_img = this.newAvatarImg;
-
+          localStorage.setItem('avatar_img', this.newAvatarImg);
           // แจ้งเตือน
           this.snackbarService.openSnackBar('Avatar changed successfully.', 'success');
 

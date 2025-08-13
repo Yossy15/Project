@@ -51,20 +51,26 @@ export class EditimagesComponent {
 
   ngOnInit(): void {
     if (typeof localStorage !== 'undefined') {
-      this.getOnlyoneimage();
-
-      this.id = localStorage.getItem('image_id');
-      this.aid = localStorage.getItem('_id');
-      this.avatar_img = localStorage.getItem('avatar_img');
-      this.name = localStorage.getItem('name');
-      this.email = localStorage.getItem('email');
-      this.userId = localStorage.getItem('userId');
+      
+      this.loadUserFromLocalStorage();this.getOnlyoneimage();
     } else {
       console.warn('localStorage is not available. Skipping initialization.');
     }
-
   }
 
+  private loadUserFromLocalStorage() {
+    this.aid = localStorage.getItem('aid');
+    this.avatar_img = localStorage.getItem('avatar_img') || "https://static.vecteezy.com/system/resources/previews/013/494/828/original/web-avatar-illustration-on-a-white-background-free-vector.jpg";
+    this.name = localStorage.getItem('name');
+    this.email = localStorage.getItem('email');
+
+    console.log("LocalStorage data loaded in posts:", {
+      aid: this.aid,
+      avatar_img: this.avatar_img,
+      name: this.name,
+      email: this.email
+    });
+  }
 
   getOnlyoneimage() {
     this.route.params.subscribe(params => {
@@ -76,7 +82,7 @@ export class EditimagesComponent {
           this.images = [data];  // กำหนดเป็น array
           if (this.images.length > 0) {
             this.id = this.images[0]._id;  // ✔️ ใช้ index 0
-            localStorage.setItem('_id', this.id);
+            // localStorage.setItem('_id', this.id);
           }
         },
         error => {
@@ -102,7 +108,6 @@ export class EditimagesComponent {
 
   chImage() {
     const dialogConfig = new MatDialogConfig();
-    const id = this.id;
     dialogConfig.width = "1000px";
     dialogConfig.width = "1000px";
     this.dialog.open(ChImageComponent, dialogConfig);

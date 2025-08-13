@@ -93,7 +93,13 @@ async getaccount(): Promise<any[]> {
     const data: any | undefined = await this.authService.getaccount().toPromise();
     if (data !== undefined) {
       this.acall = data[0];
-      console.log(this.acall);
+      console.log('Dashboard: acall data:', this.acall);
+      console.log('Dashboard: acall[0] structure:', this.acall[0]);
+      if (this.acall[0] && this.acall[0].length > 0) {
+        console.log('Dashboard: First account:', this.acall[0][0]);
+        console.log('Dashboard: First account aid:', this.acall[0][0]?.aid);
+        console.log('Dashboard: First account name:', this.acall[0][0]?.name);
+      }
       return data;
     } else {
       throw new Error("Data is undefined"); // โยน error ถ้า data เป็น undefined
@@ -106,6 +112,8 @@ async getaccount(): Promise<any[]> {
 
 
 showimg(aid: any, name: any) {
+  console.log('Dashboard: showimg called with aid:', aid, 'name:', name);
+  
   const dialogConfig = new MatDialogConfig();
   dialogConfig.width = "80%"; // กำหนดความกว้างของ dialog เป็น 80% ของหน้าจอ
   dialogConfig.height = "80%"; // กำหนดความสูงของ dialog เป็น 80% ของหน้าจอ
@@ -113,6 +121,7 @@ showimg(aid: any, name: any) {
   dialogConfig.data = { aid: aid,
                         name: name };
 
+  console.log('Dashboard: Dialog config data:', dialogConfig.data);
   this.dialog.open(ShowimgComponent,dialogConfig);
 }
 

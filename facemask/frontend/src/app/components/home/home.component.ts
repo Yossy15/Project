@@ -12,6 +12,7 @@ import { NavigationComponent } from '../navigation/navigation.component';
 import { ShowprofileComponent } from '../posts/showprofile/showprofile.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AuthService } from '../../services/auth.service';
+import { LoginSignupDialogComponent } from './login-signup-dialog/login-signup-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -58,12 +59,6 @@ export class HomeComponent implements OnInit {
 
       // ดึงภาพทั้งหมดและสุ่มภาพเริ่มต้น
       this.getAllImages();
-
-      // this.randomizeImages
-      // ดึงรายละเอียดผู้ใช้จาก backend (ถ้ามี aid)
-      // if (this.aid) {
-      //   this.fetchUserDetails(this.aid);
-      // }
     } else {
       console.warn('localStorage is not available. Skipping initialization.');
     }
@@ -81,6 +76,30 @@ export class HomeComponent implements OnInit {
       name: this.name,
       email: this.email
     });
+  }
+
+  // ตรวจสอบสถานะ login
+  isLoggedIn(): boolean {
+    return !!this.aid;
+  }
+
+
+
+  // ฟังก์ชัน logout
+  logout() {
+    // ล้างข้อมูลใน localStorage
+    localStorage.clear();
+    
+    // รีเซ็ตตัวแปร
+    this.aid = null;
+    this.avatar_img = null;
+    this.name = null;
+    this.email = null;
+    
+    console.log('Logged out successfully');
+    
+    // รีโหลดหน้าเพื่อแสดงสถานะใหม่
+    window.location.reload();
   }
 
     getUsedetail() {
@@ -158,15 +177,50 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  // ฟังก์ชันสำหรับการสุ่มภาพใหม่ (เฉพาะเมื่อ login แล้ว)
+  randomizeImagesAfterVote() {
+    if (this.isLoggedIn()) {
+      this.randomizeImages();
+    }
+  }
+
   onClickC1() {
-    this.updateRatings(true);
+    if (this.isLoggedIn()) {
+      this.updateRatings(true);
+    } else {
+      console.log('Please login to vote');
+      this.showLoginSignupDialog();
+    }
   }
 
   onClickC2() {
-    this.updateRatings(false);
+    if (this.isLoggedIn()) {
+      this.updateRatings(false);
+    } else {
+      console.log('Please login to vote');
+      this.showLoginSignupDialog();
+    }
+  }
+
+  // แสดงป็อปอัพ login/signup
+  showLoginSignupDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '500px';
+    dialogConfig.maxWidth = '90vw';
+    dialogConfig.panelClass = 'login-signup-dialog-container';
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = false;
+
+    this.dialog.open(LoginSignupDialogComponent, dialogConfig);
   }
 
   private updateRatings(character1Wins: boolean) {
+    // ตรวจสอบสถานะ login อีกครั้งเพื่อความปลอดภัย
+    if (!this.isLoggedIn()) {
+      console.log('User not logged in, cannot update ratings');
+      return;
+    }
+
     if (!this.character1Image || !this.character2Image) return;
 
     const newRating1 = this.eloService.calculateNewRating(
@@ -193,7 +247,8 @@ export class HomeComponent implements OnInit {
       error: err => console.error('Failed to update Character 2 points:', err)
     });
 
-    this.randomizeImages();
+    // สุ่มภาพใหม่เฉพาะเมื่อ login แล้ว
+    this.randomizeImagesAfterVote();
   }
 
   // private fetchUserDetails(aid: any) {

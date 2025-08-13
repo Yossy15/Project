@@ -70,9 +70,16 @@ export class LoginComponent implements OnInit {
       let decodedToken: any;
       try {
         decodedToken = jwtDecode(response.token);
-        console.log(decodedToken.userId);
+        console.log('Decoded token userId:', decodedToken.userId);
 
-        // แก้ตรงนี้ เก็บใน localStorage แล้วเซ็ต aid แยก
+        // ล้างข้อมูลเก่าใน localStorage ก่อน
+        localStorage.removeItem('aid');
+        localStorage.removeItem('avatar_img');
+        localStorage.removeItem('name');
+        localStorage.removeItem('email');
+        localStorage.removeItem('_id');
+        
+        // เก็บข้อมูลใหม่ใน localStorage
         localStorage.setItem("aid", decodedToken.userId);
         this.aid = decodedToken.userId;
 

@@ -21,9 +21,18 @@ export class ShowimgComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.aid = data.aid;
     this.name = data.name;
+    console.log('ShowimgComponent: Received data:', data);
+    console.log('ShowimgComponent: aid:', this.aid);
+    console.log('ShowimgComponent: name:', this.name);
   }
 
   ngOnInit(): void {
+    console.log('ShowimgComponent: Fetching images for aid:', this.aid);
+    
+    if (!this.aid) {
+      console.error('ShowimgComponent: aid is undefined!');
+      return;
+    }
 
     fetch(`https://facemashbackend.onrender.com/img/fetchAllUserImg/${this.aid}`)
       .then((response: Response) => {
@@ -33,13 +42,13 @@ export class ShowimgComponent implements OnInit {
         return response.json();
       })
       .then((data: any) => {
-        // console.log(data);
-        // console.log(data[0]);
+        console.log('ShowimgComponent: API response:', data);
+        console.log('ShowimgComponent: First item:', data[0]);
         this.imgAll = data[0];
-        console.log(this.imgAll);
+        console.log('ShowimgComponent: Final imgAll:', this.imgAll);
       })
       .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
+        console.error('ShowimgComponent: There was a problem with the fetch operation:', error);
       });
   }
 

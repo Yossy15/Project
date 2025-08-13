@@ -51,40 +51,54 @@ export class AddimagesComponent {
 
   ngOnInit(): void {
     if (typeof localStorage !== 'undefined') {
-      this.aid = localStorage.getItem('_id');
-      this.avatar_img = localStorage.getItem('avatar_img');
-      this.name = localStorage.getItem('name');
-      this.email = localStorage.getItem('email');
-
-      // this.getUsedetail();
+      // ดึงข้อมูลผู้ใช้จาก query parameter และ API ก่อน
+      this.getUsedetail();
     } else {
       console.warn('localStorage is not available. Skipping initialization.');
     }
-
   }
 
   getUsedetail() {
     this.route.queryParams.subscribe(params => {
-      this.userId = this.aid;
+      this.userId = params['userId'];
+      console.log('AddImage: Received userId from query params:', this.userId);
+      
       if (!this.userId) {
-        console.error("userId not found in query params");
+        console.error("AddImage: userId not found in query params");
         return;
       }
 
-      this.authService.getUsedetail(this.aid)
+      this.authService.getUsedetail(this.userId)
         .subscribe(
           (response: any) => {
-            this.aid = response?.aid;
+            // ตรวจสอบ response structure ก่อน
+            console.log('AddImage: Full API response:', response);
+            console.log('AddImage: Response keys:', Object.keys(response));
+            
+            // ใช้ aid จาก response โดยตรง
+            const responseAid = response?.aid;
+            this.aid = responseAid;
             this.avatar_img = response?.avatar_img;
             this.name = response?.name;
             this.email = response?.email;
 
-            console.log(`User details fetched: aid=${this.aid}, avatar_img=${this.avatar_img}, name=${this.name}, email=${this.email}`);
-
+            // เก็บข้อมูลใน localStorage
             localStorage.setItem('aid', this.aid);
             localStorage.setItem('avatar_img', this.avatar_img);
             localStorage.setItem('name', this.name);
             localStorage.setItem('email', this.email);
+
+            console.log('AddImage: Response aid field:', responseAid);
+            console.log('AddImage: Component aid value:', this.aid);
+            console.log('AddImage: Avatar:', response?.avatar_img);
+            console.log('AddImage: Name:', response?.name);
+            console.log('AddImage: Email:', response?.email);
+            
+            // ตรวจสอบว่า aid ไม่เป็น undefined
+            if (!this.aid) {
+              console.error('AddImage: aid is undefined after API call!');
+              console.error('Response structure:', response);
+            }
           },
           (error) => {
             console.error("Error occurred while fetching user details:", error);
@@ -93,6 +107,27 @@ export class AddimagesComponent {
     });
   }
 
+
+  checkAidBeforeNavigation() {
+    console.log('AddImage: Checking aid before navigation:', this.aid);
+    if (!this.aid) {
+      console.error('AddImage: Cannot navigate - aid is undefined!');
+      // ลองดึงจาก localStorage อีกครั้ง
+      this.aid = localStorage.getItem('aid');
+      console.log('AddImage: aid from localStorage:', this.aid);
+      
+      // ถ้ายังเป็น undefined ให้ใช้ userId จาก query params
+      if (!this.aid) {
+        this.route.queryParams.subscribe(params => {
+          this.aid = params['userId'];
+          console.log('AddImage: Using userId from query params as aid:', this.aid);
+        });
+      }
+    }
+    
+    // แสดงค่า aid ที่จะใช้ในการ navigate
+    console.log('AddImage: Final aid for navigation:', this.aid);
+  }
 
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
@@ -126,11 +161,11 @@ export class AddimagesComponent {
     if (this.downloadURL) {
       const image_url = this.downloadURL;
       const fashmash_id = this.aid;
-      // console.log(`Adding image with URL: ${image_url} and facemash_id: ${fashmash_id}`);
+      console.log(`Adding image with URL: ${image_url} and facemash_id: ${fashmash_id}`);
       this.imageService.getAdd(image_url, fashmash_id).subscribe(
         () => {
           console.log('Image added successfully');
-          this.router.navigate(['/main']);
+          this.router.navigate(['/main'], { queryParams: { userId: this.aid } });
         },
         error => {
           console.error('Error adding image:', error);
